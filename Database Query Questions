@@ -1,0 +1,58 @@
+1. How to get 2nd largest salary form employee table?
+
+//Using Distinct and order by and offset
+Select distinct salary
+from employee
+order by salary desc
+Limit 1 offset 1
+
+//Using Dense rank()- it handles duplicates
+Select salary
+from(
+select salary,
+dense_rank() over
+(order by salary desc)as rnk
+from employee) t
+where rnk=2;
+
+2. Write a query to get all Dept which don't have any employee?
+    Emp (epmid, epmname, dept_id)
+    Dept (deptid, deptname);
+
+//Left Join
+select d.deptid,d.deptname
+from dept d
+left join emp e
+on d.deptid=e.deptid
+where e.deptid is null;
+
+3. Write a query to get the average salary for each job ID excluding programmer?
+employee(empid,empname,salary,jobid)
+
+select jobid,avg(salary)
+from employy
+where jobid<>'programmer'
+group by jobid;
+
+4. Write a query to get the total salary, maximum, minimum, average salary of employees (job ID wise).
+
+select jobid,
+sum(salary),min(salary),max(salary),avg(salary)
+from employee
+group by jobid
+
+5. Show only jobs whose average salary is greater than 10000
+
+select jobid,
+sum(salary),min(salary),max(salary),avg(salary)
+from employee
+group by jobid
+having avg(salary)>10000;
+
+6. Write a query to get the average salary for all departments employing more than 10 employees.
+Employee(empid,empname,salary,deptid)
+
+Select deptid,avg(salary)
+from employee
+group by deptid
+having count(empid)>10
